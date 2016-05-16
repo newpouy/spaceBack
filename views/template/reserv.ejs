@@ -1,0 +1,65 @@
+<%layout('../layout0')%>
+<div id="page-wrapper">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">예약관리</h1>
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h3>예약현황</h3>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>예약일</th>
+                                    <th>시작시간</th>
+                                    <th>종료시간</th>
+                                    <th>공간번호</th>
+                                    <th>예약자명</th>
+                                    <th>결제여부</th>
+                                    <th>변경일자</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tb">
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+
+</div>
+<!-- /#page-wrapper -->
+
+<script>
+    $(document).ready(function(){
+
+        getList();
+    })
+
+    function getList(){
+        $.get("/reserv/list"
+                  ,{}
+                  ,function(result){
+                    var tb = $('#tb');
+                    tb.html("");
+                    $.each(result,function(a,b){
+                      console.log(b);
+                        var html ="<tr><td>"+b.resevDate+"</td><td>"+b.startTime+"</td><td>"+b.EndTime+
+                                  "</td><td>"+b.roomNum+"</td><td>"+b.username+"</td><td>"+b.payYN+
+                                  "</td><td>"+b.updateDate+"</td></tr>";
+                        tb.append(html);
+                    })
+                  })
+    }
+
+</script>

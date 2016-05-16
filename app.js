@@ -55,12 +55,12 @@ if (app.get('env') === 'development') {
 }
 
 Database.config(
-  config && config.mongodb && config.mongodb.address ? config.mongodb.address : '', 'sbadmin',
-  
+  config && config.mongodb && config.mongodb.address ? config.mongodb.address : '', 'spaceBook',
+
   config.mongodb && config.mongodb.options ? config.mongodb.options : undefined,
   function(err, message) {
     if (!err) console.info('  - Mongodb is connected');
-    
+
   }
 );
 

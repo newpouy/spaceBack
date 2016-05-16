@@ -1,7 +1,8 @@
 var Bbs = require('../persister/bbs');
+var Reserv = require('../persister/reserv');
 
 module.exports = function(app, passport){
-	
+
 	 /* GET home page. */
 	app.get('/',isAuthenticated, function(req, res) {
 	   res.redirect('/readme');
@@ -10,7 +11,7 @@ module.exports = function(app, passport){
 	app.post('/login', passport.authenticate('login', {
 		successRedirect: '/readme',
 		failureRedirect: '/login',
-		failureFlash : true 
+		failureFlash : true
 	}));
 
 	app.get('/login', function(req, res) {
@@ -21,8 +22,8 @@ module.exports = function(app, passport){
 	   req.logout();
   	   res.redirect('/');
 	});
-	
-	
+
+
 	app.get('/signup', function(req, res){
 		res.render('template/signup',{ message: req.flash('message') });
 	});
@@ -31,7 +32,7 @@ module.exports = function(app, passport){
 	app.post('/signup', passport.authenticate('signup', {
 		successRedirect: '/login',
 		failureRedirect: '/signup',
-		failureFlash : true 
+		failureFlash : true
 	}));
 	app.get('/readme',isAuthenticated, function(req, res) {
 	   res.render('template/readme', {});
@@ -72,35 +73,49 @@ module.exports = function(app, passport){
 	app.get('/blank',isAuthenticated, function(req, res) {
 	   res.render('template/blank', {});
 	});
-	
+
   	app.get('/bbs',isAuthenticated, function(req, res) {
 	   res.render('template/bbs', {});
 	});
-	
+
+	app.get('/reserv',isAuthenticated, function(req, res) {
+	 res.render('template/reserv', {});
+	});
+
 	app.get('/bbs/list',isAuthenticated, function(req, res) {
-		 Bbs.find({}, 
+		 Bbs.find({},
 	      function(err, bbs) {
 	        // In case of any error, return using the done method
 	        if (err)
 	          return done(err);
 	        // Username does not exist, log error & redirect back
-	        res.send(bbs);
+					res.send(bbs);
+	      }
+	    );
+	});
+
+	app.get('/reserv/list',isAuthenticated, function(req, res) {
+		 Reserv.find({},
+	      function(err, reserv) {
+	        if (err)
+	          return done(err);
+					res.send(reserv);
 	      }
 	    );
 	});
 
 	app.post('/bbs/create',isAuthenticated, function(req, res) {
-		
+
 		var newBbs = new Bbs();
 		// set the user's local credentials
 		newBbs.content = req.param('content');
 		newBbs.vote = 0;
 		newBbs.username = req.user.username;
-		
+
 		// save the user
 		newBbs.save(function(err) {
 			if (err){
-			  console.log('Error in Saving bbs: '+err);  
+			  console.log('Error in Saving bbs: '+err);
 			  res.send({"result":false});
 			}
 			res.send({"result":true});
@@ -112,7 +127,7 @@ module.exports = function(app, passport){
 		var id = req.param('id');
 		Bbs.findByIdAndRemove(id,function(err){
 			if (err){
-			  console.log('Error in Saving bbs: '+err);  
+			  console.log('Error in Saving bbs: '+err);
 			  res.send({"result":false});
 			}
 
@@ -120,7 +135,7 @@ module.exports = function(app, passport){
 			res.send({"result":true});
 		})
 
-		
+
 	});
 	app.post('/bbs/update',isAuthenticated, function(req, res) {
 		// set the user's local credentials
@@ -128,14 +143,14 @@ module.exports = function(app, passport){
 
 		Bbs.findById(id,function(err,bbs){
 			if (err){
-			  console.log('Error in Saving bbs: '+err);  
+			  console.log('Error in Saving bbs: '+err);
 			  res.send({"result":false});
 			}
 			bbs.vote +=1;
 			bbs.save(function(){
-				res.send({"result":true});	
+				res.send({"result":true});
 			})
-			
+
 		})
 	});
 }
@@ -146,6 +161,3 @@ module.exports = function(app, passport){
 	    return next();
 	  res.redirect('/login');
 	}
-
-
-
